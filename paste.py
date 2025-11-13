@@ -1,26 +1,38 @@
 import pyperclip
 import pyautogui
-import time
 import keyboard
+import time
 
 def type_clipboard_contents():
-    # Wait for 1 second before typing
-    time.sleep(0.5)
+    """
+    Gets text from the clipboard and types it out.
+    """
+    try:
+        # Give a tiny pause. This helps prevent the hotkey 
+        # (e.g., the 'alt' key) from "sticking" or interfering.
+        time.sleep(0.3) 
+        
+        # Get the text from the clipboard
+        text_to_type = pyperclip.paste()
+        
+        # Type the text, just like before
+        pyautogui.typewrite(text_to_type, interval=0.001)
+        
+    except Exception as e:
+        print(f"Error while typing clipboard: {e}")
 
-    # Get the clipboard contents
-    clipboard_text = pyperclip.paste()
+# --- Main Part of the Script ---
 
-    # Type out the clipboard contents
-    for char in clipboard_text:
-        pyautogui.typewrite(char, interval=0.01) # Reduced delay to 0.01 seconds
-        # time.sleep(0.01) # Uncomment this line if you want to use the sleep method instead
-    
-    # Wait for 0.5 seconds before exiting
-    time.sleep(0.5)
-
-# Set the keybind to activate the script
+# 1. Register the hotkey. When 'alt+/' is pressed, 
+#    it will call the 'type_clipboard_contents' function.
 keyboard.add_hotkey('alt+/', type_clipboard_contents)
 
-# Run the script in the background
-print("Script is running. Press Alt+/ to type out the clipboard contents.")
-keyboard.wait()
+print("Hotkey listener started...")
+print("Press 'Alt + /' to type your clipboard.")
+print("\n(This window must stay open. Press 'Esc' to stop the script.)")
+
+# 2. Keep the script running. 
+#    It will wait until you press the 'esc' key to quit.
+keyboard.wait('esc')
+
+print("Script stopped.")
